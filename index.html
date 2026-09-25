@@ -131,19 +131,19 @@
           <div class="row g-3">
             <div class="col-md-3">
               <label class="form-label text-muted small fw-bold" for="customerName">Customer Name</label>
-              <input type="text" id="customerName" class="form-control form-control-sm" value="" oninput="calculateAll()">
+              <input type="text" id="customerName" class="form-control form-control-sm" value="Andrew" oninput="calculateAll()">
             </div>
             <div class="col-md-3">
               <label class="form-label text-muted small fw-bold" for="proposalDate">Proposal Date</label>
-              <input type="date" id="proposalDate" class="form-control form-control-sm" value="" onchange="calculateAll()">
+              <input type="date" id="proposalDate" class="form-control form-control-sm" value="2026-09-24" onchange="calculateAll()">
             </div>
             <div class="col-md-3">
               <label class="form-label text-muted small fw-bold" for="projectSite">Project Site Address</label>
-              <input type="text" id="projectSite" class="form-control form-control-sm" value="" oninput="calculateAll()">
+              <input type="text" id="projectSite" class="form-control form-control-sm" value="1209 E Fifth St Tama, IA 52339" oninput="calculateAll()">
             </div>
             <div class="col-md-3">
               <label class="form-label text-muted small fw-bold" for="contactInfo">Contact Phone / Email</label>
-              <input type="text" id="contactInfo" class="form-control form-control-sm" value="" oninput="calculateAll()">
+              <input type="text" id="contactInfo" class="form-control form-control-sm" value="641-660-0140" oninput="calculateAll()">
             </div>
 
             <!-- Logo Upload Input -->
@@ -154,7 +154,7 @@
 
             <div class="col-md-8">
               <label class="form-label text-muted small fw-bold" for="projectNotes">Scope of Work / Project Notes</label>
-              <input type="text" id="projectNotes" class="form-control form-control-sm" value="" oninput="calculateAll()">
+              <input type="text" id="projectNotes" class="form-control form-control-sm" value="Full drywall installation, level 4 finish, primer, and custom painting scope... material will be covered by owner" oninput="calculateAll()">
             </div>
 
             <div class="col-md-2">
@@ -211,109 +211,7 @@
         <div class="card card-custom p-3 mb-4 no-print">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="text-dark fw-bold m-0"><i class="bi bi-door-open text-warning me-2"></i>🏠 Room Breakdown & Specifications</h5>
-            <button class="btn btn-warning btn-sm fw-bold" onclick="addRoom()"><i class="bi bi-plus-lg me-1"></i>Add Room</button><!-- Buttons -->
- <button class="btn btn-warning btn-sm fw-bold" onclick="saveEstimate()" class="btn-save">Save Estimate</button>
- <button class="btn btn-warning btn-sm fw-bold" onclick="loadEstimate()" class="btn-load">Load Saved Estimate</button><!-- Button -->
- <button class="btn btn-warning btn-sm fw-bold" onclick="resetForm()" class="btn-reset">Reset Form</button>
-
-<script>
-function resetForm() {
-    if (confirm("Are you sure you want to clear all data and start a new estimate?")) {
-        // Reset standard form text/number inputs
-        document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
-            input.value = '';
-        });
-
-        // Reset default values if needed (e.g., Base Labor, Temp, Humidity)
-        document.getElementById('siteTemp').value = '68';
-        document.getElementById('humidity').value = '50';
-        document.getElementById('wasteAllowance').value = '15';
-        document.getElementById('baseLabor').value = '2.00';
-        document.getElementById('dumpsterFee').value = '0';
-        document.getElementById('markup').value = '0';
-
-        // Clear room cards container (replace '#roomsContainer' with your wrapper's ID)
-        const roomContainer = document.getElementById('roomsContainer');
-        if (roomContainer) {
-            roomContainer.innerHTML = '';
-        }
-
-        // Recalculate totals
-        if (typeof calculateTotals === 'function') {
-            calculateTotals();
-        }
-    }
-}
-</script>
-
-<script>
-function saveEstimate() {
-    // Collect general project details
-    const projectData = {
-        customerName: document.getElementById('customerName')?.value || '',
-        proposalDate: document.getElementById('proposalDate')?.value || '',
-        siteAddress: document.getElementById('siteAddress')?.value || '',
-        phoneEmail: document.getElementById('phoneEmail')?.value || '',
-        notes: document.getElementById('scopeNotes')?.value || '',
-        baseLabor: document.getElementById('baseLabor')?.value || '',
-        rooms: []
-    };
-
-    // Collect data from each dynamic room card
-    document.querySelectorAll('.room-card').forEach(card => {
-        projectData.rooms.push({
-            name: card.querySelector('.room-name')?.value || '',
-            length: card.querySelector('.room-length')?.value || '',
-            width: card.querySelector('.room-width')?.value || '',
-            height: card.querySelector('.room-height')?.value || '',
-            outCorners: card.querySelector('.room-corners')?.value || '',
-            deductSqFt: card.querySelector('.room-deduct')?.value || '',
-            greenBoard: card.querySelector('.chk-greenboard')?.checked || false,
-            walls: card.querySelector('.chk-walls')?.checked || false,
-            ceiling: card.querySelector('.chk-ceiling')?.checked || false,
-            primer: card.querySelector('.chk-primer')?.checked || false,
-            paint: card.querySelector('.chk-paint')?.checked || false
-        });
-    });
-
-    // Save to localStorage
-    localStorage.setItem('jpf_saved_estimate', JSON.stringify(projectData));
-    alert('Estimate saved successfully!');
-}
-
-function loadEstimate() {
-    const savedData = localStorage.getItem('jpf_saved_estimate');
-    if (!savedData) {
-        alert('No saved estimate found.');
-        return;
-    }
-
-    const projectData = JSON.parse(savedData);
-
-    // Populate project fields
-    if (document.getElementById('customerName')) document.getElementById('customerName').value = projectData.customerName;
-    if (document.getElementById('proposalDate')) document.getElementById('proposalDate').value = projectData.proposalDate;
-    if (document.getElementById('siteAddress')) document.getElementById('siteAddress').value = projectData.siteAddress;
-    if (document.getElementById('phoneEmail')) document.getElementById('phoneEmail').value = projectData.phoneEmail;
-    if (document.getElementById('scopeNotes')) document.getElementById('scopeNotes').value = projectData.notes;
-    if (document.getElementById('baseLabor')) document.getElementById('baseLabor').value = projectData.baseLabor;
-
-    // Rebuild room breakdown cards from saved list
-    const roomContainer = document.getElementById('roomsContainer');
-    if (roomContainer) {
-        roomContainer.innerHTML = ''; // Clear current rooms
-        projectData.rooms.forEach(room => {
-            // Call your existing function that creates/adds a room card, then fill its values
-            addRoomWithData(room); 
-        });
-    }
-
-    if (typeof calculateTotals === 'function') {
-        calculateTotals();
-    }
-    alert('Estimate loaded successfully!');
-}
-</script>
+            <button class="btn btn-warning btn-sm fw-bold" onclick="addRoom()"><i class="bi bi-plus-lg me-1"></i>Add Room</button>
           </div>
           <div id="roomsContainer" class="row g-3" style="max-height: 500px; overflow-y: auto;">
             <!-- Dynamic Room Cards -->
@@ -333,15 +231,7 @@ function loadEstimate() {
             <div class="text-end">
               <h3 class="fw-bold text-dark m-0">PROJECT PROPOSAL</h3>
               <p class="text-secondary m-0">Date: <span id="dispDate">2026-09-24</span></p>
-              <p class="text-secondary m-0"> <p class="text-secondary m-0"> <!-- Inside Project Details & Parameters -->
-<div class="form-group">
-    <label for="estimateId">Estimate ID / No.:</label>
-    <input type="text" id="estimateId" value="" placeholder="e.g. EST-2026-1001">
-    
- </div>
-              
-<!-- Inside Project Proposal Header -->
-<div class="proposal-header"></p>
+              <p class="text-secondary m-0">Estimate ID: JPF-2026-01</p>
             </div>
           </div>
 
